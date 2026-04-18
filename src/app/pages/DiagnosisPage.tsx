@@ -34,43 +34,42 @@ export function DiagnosisPage() {
     toast.success("Starting AI analysis...");
     setIsAnalyzing(true);
 
-    // Simulate API call to Python ML backend
-    // In production, replace this with actual API integration:
-    // 
-    // const formData = new FormData();
-    // formData.append('xray_image', selectedImage);
-    // formData.append('symptoms', JSON.stringify(symptoms));
-    // 
-    // try {
-    //   const response = await fetch('YOUR_PYTHON_API_ENDPOINT/analyze', {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
-    //   const result = await response.json();
-    //   sessionStorage.setItem("diagnosisResult", JSON.stringify(result));
-    //   navigate("/result");
-    // } catch (error) {
-    //   console.error('Analysis failed:', error);
-    //   alert('Analysis failed. Please try again.');
-    // } finally {
-    //   setIsAnalyzing(false);
-    // }
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedImage);
+      formData.append("fever", String(symptoms.fever));
+      formData.append("cough", String(symptoms.cough));
+      formData.append("fatigue", String(symptoms.fatigue));
 
-    setTimeout(() => {
-      // Generate mock result data
-      const mockResult = {
-        prediction: Math.random() > 0.5 ? "pneumonia" : "normal",
-        confidence: Math.random() * 0.3 + 0.7, // 70-100%
+      const response = await fetch(
+        "https://harisbinnasir-pneumonia-detection-api.hf.space/predict",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze image");
+      }
+
+      const data = await response.json();
+
+      const analysisResult = {
+        result: data.result,
+        confidence: data.confidence,
         symptoms: symptoms,
         imageUrl: URL.createObjectURL(selectedImage),
       };
 
-      // Store result in sessionStorage for the result page
-      sessionStorage.setItem("diagnosisResult", JSON.stringify(mockResult));
-
-      setIsAnalyzing(false);
+      sessionStorage.setItem("diagnosisResult", JSON.stringify(analysisResult));
       navigate("/result");
-    }, 3000);
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      toast.error("Analysis failed. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (

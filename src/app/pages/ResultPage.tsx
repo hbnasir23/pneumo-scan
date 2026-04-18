@@ -16,8 +16,8 @@ import {
 import { motion } from "motion/react";
 
 interface DiagnosisResult {
-  prediction: "pneumonia" | "normal";
-  confidence: number;
+  result: "PNEUMONIA" | "NORMAL";
+  confidence: string;
   symptoms: any;
   imageUrl: string;
 }
@@ -40,8 +40,8 @@ export function ResultPage() {
     return null;
   }
 
-  const isPneumonia = result.prediction === "pneumonia";
-  const confidencePercent = Math.round(result.confidence * 100);
+  const isPneumonia = result.result === "PNEUMONIA";
+  const confidencePercent = parseFloat(result.confidence) || 0;
 
   const handleNewScan = () => {
     sessionStorage.removeItem("diagnosisResult");

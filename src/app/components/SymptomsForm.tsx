@@ -29,22 +29,7 @@ export function SymptomsForm({ symptoms, onChange }: SymptomsFormProps) {
   const symptomsList = [
     { id: "fever", label: "Fever", field: "fever" as keyof Symptoms },
     { id: "cough", label: "Cough", field: "cough" as keyof Symptoms },
-    {
-      id: "chestPain",
-      label: "Chest Pain",
-      field: "chestPain" as keyof Symptoms,
-    },
-    {
-      id: "shortnessOfBreath",
-      label: "Shortness of Breath",
-      field: "shortnessOfBreath" as keyof Symptoms,
-    },
     { id: "fatigue", label: "Fatigue", field: "fatigue" as keyof Symptoms },
-    {
-      id: "difficultyBreathing",
-      label: "Difficulty Breathing",
-      field: "difficultyBreathing" as keyof Symptoms,
-    },
   ];
 
   return (
