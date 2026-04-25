@@ -41,7 +41,10 @@ export function ResultPage() {
   }
 
   const isPneumonia = result.result === "PNEUMONIA";
-  const confidencePercent = parseFloat(result.confidence) || 0;
+  // Parse confidence string (e.g., '95.50%') to number
+  const confidencePercent = typeof result.confidence === 'string' 
+    ? parseFloat(result.confidence.replace('%', '')) || 0 
+    : Number(result.confidence) || 0;
 
   const handleNewScan = () => {
     sessionStorage.removeItem("diagnosisResult");

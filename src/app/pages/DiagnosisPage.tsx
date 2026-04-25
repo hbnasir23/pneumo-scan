@@ -55,15 +55,23 @@ export function DiagnosisPage() {
 
       const data = await response.json();
 
-      const analysisResult = {
-        result: data.result,
-        confidence: data.confidence,
-        symptoms: symptoms,
-        imageUrl: URL.createObjectURL(selectedImage),
-      };
+      if (data.result === "ERROR") {
+        toast.error(data.message || "An error occurred during analysis");
+        setIsAnalyzing(false);
+        return;
+      }
 
-      sessionStorage.setItem("diagnosisResult", JSON.stringify(analysisResult));
-      navigate("/result");
+      if (data.result === "NORMAL" || data.result === "PNEUMONIA") {
+        const analysisResult = {
+          result: data.result,
+          confidence: data.confidence,
+          symptoms: symptoms,
+          imageUrl: URL.createObjectURL(selectedImage),
+        };
+
+        sessionStorage.setItem("diagnosisResult", JSON.stringify(analysisResult));
+        navigate("/result");
+      }
     } catch (error) {
       console.error("Analysis failed:", error);
       toast.error("Analysis failed. Please try again.");
